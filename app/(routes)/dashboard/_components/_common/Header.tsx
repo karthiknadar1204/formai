@@ -110,6 +110,7 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
+                type="button"
                 className="flex
               items-start gap-2
               focus:outline-none focus:ring-2 focus:ring-white/20 rounded-lg
