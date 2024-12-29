@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import FormBuilder from "../../../_components/FormBuilder";
+import BuilderContextProvider from "@/context/builder-provider";
 
-const page = () => {
+const Builder = () => {
   return (
-    <div>page</div>
-  )
-}
+    <BuilderContextProvider>
+      <FormBuilder />
+    </BuilderContextProvider>
+  );
+};
 
-export default page
+export default Builder;
