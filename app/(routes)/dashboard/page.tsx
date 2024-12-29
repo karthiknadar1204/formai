@@ -1,10 +1,10 @@
 import React, { Suspense } from "react";
 import { fetchAllForms, fetchFormStats } from "@/actions/form.action";
-import StatsCards from "./_components/StatsCards";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "lucide-react";
-import FormItem from "./_components/_common/FormItem";
 import CreateForm from "./_components/CreateForm";
+import FormItem from "./_components/_common/FormItem";
+import StatsCards from "./_components/StatsCards";
 
 const Dashboard = () => {
   return (
