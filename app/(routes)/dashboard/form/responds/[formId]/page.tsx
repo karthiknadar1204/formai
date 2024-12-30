@@ -71,3 +71,4 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
 };
 
 export default Responds;
+
