@@ -5,6 +5,10 @@ import { defaultBackgroundColor, defaultPrimaryColor } from "@/constant";
 import { generateUniqueId } from "@/lib/helper";
 import { prisma } from "@/lib/prismadb";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { generateEmbeddings, initPinecone } from "@/lib/embeddings";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("form-actions");
 
 export async function fetchFormStats() {
   try {
@@ -296,6 +300,29 @@ export async function fetchPublishFormById(formId: string): Promise<{
   }
 }
 
+// Helper function to prepare response data for embeddings
+const prepareResponseForEmbeddings = (
+  blocks: FormBlockInstance[],
+  responses: { id: string; responseValue: string }
+) => {
+  const childblockMap = blocks
+    .flatMap((block) => block.childblocks || [])
+    .reduce((acc, childblock) => {
+      if (childblock) {
+        acc[childblock.id] = childblock?.attributes?.label || "No label";
+      }
+      return acc;
+    }, {} as Record<string, string>);
+
+  // Create a text representation of Q&A pairs
+  return Object.entries(responses)
+    .map(([key, value]) => {
+      const question = childblockMap[key] || "Unknown Question";
+      return `Question: ${question}\nAnswer: ${value}`;
+    })
+    .join("\n\n");
+};
+
 export async function submitResponse(formId: string, response: string) {
   try {
     if (!formId) {
@@ -304,6 +331,54 @@ export async function submitResponse(formId: string, response: string) {
         message: "FormId is required",
       };
     }
+
+    // Fetch the form to get the blocks
+    const form = await prisma.form.findUnique({
+      where: { formId },
+      select: { jsonBlocks: true },
+    });
+
+    if (!form) {
+      return {
+        success: false,
+        message: "Form not found",
+      };
+    }
+
+    const blocks = JSON.parse(form.jsonBlocks) as FormBlockInstance[];
+    const parsedResponse = JSON.parse(response);
+
+    // Generate text for embeddings
+    const textForEmbeddings = prepareResponseForEmbeddings(blocks, parsedResponse);
+
+    try {
+      // Generate embeddings
+      const embedding = await generateEmbeddings(textForEmbeddings);
+      
+      // Initialize Pinecone
+      const pinecone = await initPinecone();
+      const index = pinecone.Index("formai");
+
+      // Store in Pinecone with metadata
+      await index.upsert([
+        {
+          id: `${formId}-${Date.now()}`,
+          values: embedding,
+          metadata: {
+            formId,
+            responseText: textForEmbeddings,
+            timestamp: new Date().toISOString(),
+          },
+        },
+      ]);
+
+      logger.info(`Embeddings stored for form response: ${formId}`);
+    } catch (error) {
+      logger.error("Failed to store embeddings:", error);
+      // Continue with form submission even if embedding fails
+    }
+
+    // Store response in database
     await prisma.form.update({
       where: {
         formId: formId,
@@ -320,11 +395,13 @@ export async function submitResponse(formId: string, response: string) {
         },
       },
     });
+
     return {
       success: true,
       message: "Response submitted",
     };
   } catch (error) {
+    logger.error("Form submission failed:", error);
     return {
       success: false,
       message: "Something went wrong",
