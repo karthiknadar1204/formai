@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import AllReponds from "../_components/AllReponds";
+import ChatPanel from "../_components/ChatPanel";
 
 const Responds = async ({ params }: { params: { formId: string } }) => {
   const { formId } = params;
@@ -64,6 +65,7 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
           </div>
         </div>
       </div>
+      <ChatPanel formId={formId} />
     </main>
   );
 };
