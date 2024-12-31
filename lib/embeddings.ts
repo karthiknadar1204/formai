@@ -11,6 +11,10 @@ const openai = new OpenAI({
 
 // Initialize Pinecone
 export const initPinecone = async () => {
+  if (!process.env.PINECONE_API_KEY) {
+    throw new Error('PINECONE_API_KEY is not defined in environment variables');
+  }
+
   const pinecone = new Pinecone({
     apiKey: process.env.PINECONE_API_KEY,
   });

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prismadb";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { generateEmbeddings, initPinecone } from "@/lib/embeddings";
 import { createLogger } from "@/lib/logger";
+import { FormBlockInstance } from "@/@types/form-block.type";
 
 const logger = createLogger("form-actions");
 

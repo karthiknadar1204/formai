@@ -10,6 +10,7 @@ const MAX_TOKENS = 4000;
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
+  name?: string;
 }
 
 export class ChatService {
@@ -78,7 +79,14 @@ Please format your response in a clear, readable way.`
       });
 
       const responseMessage = response.choices[0].message;
-      this.context.push(responseMessage);
+      if (responseMessage.content === null) {
+        throw new Error("Received null content from OpenAI");
+      }
+
+      this.context.push({
+        role: responseMessage.role,
+        content: responseMessage.content
+      });
 
       // 6. Manage context length
       if (response.usage && response.usage.total_tokens > MAX_TOKENS) {
