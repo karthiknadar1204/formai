@@ -2,10 +2,11 @@ import React from "react";
 import { fetchAllResponseByFormId } from "@/actions/form.action";
 import { FormBlockInstance } from "@/@types/form-block.type";
 import { Button } from "@/components/ui/button";
-import { Link } from "lucide-react";
+import { Link, FileJson } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import AllReponds from "../_components/AllReponds";
 import ChatPanel from "../_components/ChatPanel";
+import ViewJsonButton from "../_components/ViewJsonButton";
 
 const Responds = async ({ params }: { params: { formId: string } }) => {
   const { formId } = params;
@@ -41,19 +42,22 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
             >
               ({responses?.length}) Responses
             </h1>
-            <a
-              href={`${process.env.NEXT_PUBLIC_APP_URL}/public/submit-form/${formId}`}
-              target="_blank"
-            >
-              <Button
-                className="
+            <div className="flex items-center gap-2">
+              <ViewJsonButton responses={responses} blocks={blocks} />
+              <a
+                href={`${process.env.NEXT_PUBLIC_APP_URL}/public/submit-form/${formId}`}
+                target="_blank"
+              >
+                <Button
+                  className="
               w-full max-w-44
                !bg-primary"
-              >
-                <Link />
-                Visit Link
-              </Button>
-            </a>
+                >
+                  <Link />
+                  Visit Link
+                </Button>
+              </a>
+            </div>
           </div>
 
           <div className="mt-10">
