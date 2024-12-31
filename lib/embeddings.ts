@@ -7,7 +7,6 @@ const logger = createLogger('embeddings');
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true 
 });
 
 // Initialize Pinecone
