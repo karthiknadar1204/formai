@@ -2,7 +2,7 @@ import React from "react";
 import { fetchAllResponseByFormId } from "@/actions/form.action";
 import { FormBlockInstance } from "@/@types/form-block.type";
 import { Button } from "@/components/ui/button";
-import { Link, FileJson } from "lucide-react";
+import { Link, FileJson, BarChart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import AllReponds from "../_components/AllReponds";
 import ChatPanel from "../_components/ChatPanel";
@@ -44,6 +44,16 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
             </h1>
             <div className="flex items-center gap-2">
               <ViewJsonButton responses={responses} blocks={blocks} />
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                asChild
+              >
+                <a href={`/dashboard/form/responds/${formId}/analytics`}>
+                  <BarChart className="w-4 h-4" />
+                  Analytics
+                </a>
+              </Button>
               <a
                 href={`${process.env.NEXT_PUBLIC_APP_URL}/public/submit-form/${formId}`}
                 target="_blank"
