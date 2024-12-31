@@ -6,8 +6,8 @@ import "./globals.css";
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Formy.ai - Form Builder",
-  description: "Formy.ai - Form Builder",
+  title: "Formify - Form Builder",
+  description: "Formify - Form Builder",
 };
 
 export default function RootLayout({

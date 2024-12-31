@@ -26,7 +26,7 @@ const NotAvaliable = () => {
          text-[20px] text-primary"
         >
           {" "}
-          Formy.ai
+          Formify.ai
         </h5>
       </div>
     </div>

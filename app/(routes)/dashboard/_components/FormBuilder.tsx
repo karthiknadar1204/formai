@@ -17,7 +17,7 @@ const FormBuilder = () => {
       <div
         className="w-full 
     flex h-56
-     items-center
+     items-center ̰
       justify-center"
       >
         <Loader size="3rem" className="animate-spin" />

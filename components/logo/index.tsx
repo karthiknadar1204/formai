@@ -11,17 +11,13 @@ const Logo = (props: { url?: string; color?: string }) => {
     "
     >
       <Link href={url} className="flex items-center gap-2">
-        <div
-          className="font-bold size-[30px] text-gray-50
-          rounded-lg flex items-center border-2
-           dark:border-gray-200
-             justify-center bg-gradient-to-br
-              from-purple-500 to-primary to-90%
-             !font-mono italic
-                  "
-          style={{ fontSize: "19px" }}
-        >
-          F
+        <div className="relative flex items-center justify-center overflow-hidden size-[30px]">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-black rounded-lg transform rotate-45"></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-blue-700 to-transparent opacity-50 rounded-lg"></div>
+          <span className="relative text-white font-bold italic font-mono" style={{ fontSize: "15px" }}>
+            F
+          </span>
+          <div className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -skew-x-12"></div>
         </div>
         <h5
           className={cn(
@@ -30,7 +26,7 @@ const Logo = (props: { url?: string; color?: string }) => {
             color
           )}
         >
-          Formy.ai
+          Formify
         </h5>
       </Link>
     </div>

@@ -46,7 +46,7 @@ const PreviewDialog = () => {
                 scrollbar transition-all duration-300
               "
           style={{
-            backgroundColor: defaultBackgroundColor,
+            backgroundColor: 'hsl(205, 85%, 95%)'
           }}
         >
           <div
@@ -62,7 +62,7 @@ const PreviewDialog = () => {
             >
               <div
                 className="w-full mb-3
-             bg-white bg-[url(/images/form-bg.jpg)] bg-center bg-cover border shadow-sm h-[135px] max-w-[768px]
+             bg-white bg-[url(/images/form_bg.jpg)] bg-center bg-cover border shadow-sm h-[135px] max-w-[768px]
           rounded-md px-1"
               />
 

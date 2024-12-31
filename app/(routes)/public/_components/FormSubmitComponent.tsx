@@ -91,6 +91,9 @@ const FormSubmitComponent = (props: {
       className="scrollbar w-full h-full
   overflow-y-auto pt-3 transition-all duration-300
   "
+      style={{
+        backgroundColor: 'hsl(205, 85%, 95%)'
+      }}
     >
       <div
         className="w-full h-full 
@@ -106,7 +109,7 @@ const FormSubmitComponent = (props: {
         >
           <div
             className="w-full mb-3
-             bg-white bg-[url(/images/form-bg.jpg)] 
+             bg-white bg-[url(/images/form_bg.jpg)] 
              bg-center bg-cover border shadow-sm 
              h-[135px] max-w-[768px]
           rounded-md px-1"
@@ -171,7 +174,7 @@ const FormSubmitComponent = (props: {
           justify-center
           mt-5"
           >
-            <p className="text-xs ">Never submit passwords through Formy.ai.</p>
+            <p className="text-xs ">Never submit passwords through Formify.</p>
             <Logo url="#" color="!text-primary" />
           </div>
         </div>

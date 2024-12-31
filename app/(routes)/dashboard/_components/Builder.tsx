@@ -14,7 +14,7 @@ const Builder = (props: { isSidebarOpen: boolean }) => {
         <div
           className="w-full h-full"
           style={{
-            backgroundColor: defaultBackgroundColor,
+            backgroundColor: 'hsl(var(--builder-background))'
           }}
         >
           <SidebarTrigger className=" absolute top-0 z-50" />

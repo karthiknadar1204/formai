@@ -23,7 +23,7 @@ export default function Home() {
                   AI Powered
                 </span>
                 {"  "}
-                Formy Builder
+                Formify  Builder
               </p>
             </h1>
             <p className=" block text-lg mt-3 max-w-2xl mx-auto w-full font-medium text-black/70">
@@ -57,7 +57,7 @@ export default function Home() {
             <div className="relative w-full h-full rounded-md">
               <Image
                 src="/images/board-img.png"
-                alt="Formy AI dashboard"
+                alt="Formify AI dashboard"
                 fill
                 className="object-contain w-full h-full rounded-md"
               />

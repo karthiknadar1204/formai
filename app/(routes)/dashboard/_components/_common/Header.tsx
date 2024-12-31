@@ -39,11 +39,6 @@ const Header = () => {
       pathname: `/dashboard/form/responds/${formId}`,
       isDisabled: true,
     },
-    {
-      name: "Settings",
-      pathname: "#",
-      isDisabled: false,
-    },
   ];
 
   return (
@@ -62,7 +57,7 @@ const Header = () => {
          border-r border-gray-300"
         >
           <Logo url="/dashboard" />
-          <span className="sr-only">Fomai</span>
+          <span className="sr-only">Formify</span>
         </div>
         <ul className="hidden md:flex flex-row">
           {NAV_MENUS.map((item, idx) => (
