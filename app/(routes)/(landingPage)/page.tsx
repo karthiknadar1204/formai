@@ -1,73 +1,65 @@
 import { Button } from "@/components/ui/button";
 import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { ChevronRight, ExternalLink, Video } from "lucide-react";
+import { ChevronRight, Wand2 } from 'lucide-react';
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="w-full">
-      <div className="hero-section w-full min-h-screen">
-        <div className="w-full flex flex-col items-center justify-center py-10 max-w-4xl mx-auto">
-          <div className="rounded-full flex items-center bg-white border font-medium gap-1 text-sm h-auto p-2 bg-muted max-w-80">
-            <div className="p-2 h-5 shrink-0 flex items-center text-xs justify-center text-white bg-primary rounded-full">
-              New
-            </div>
-            Subscribe to Techwithemma
-            <ChevronRight className="w-4 h-4" />
-          </div>
-
-          <div className="flex flex-col mt-5 items-center text-center">
-            <h1 className="text-6xl font-black">
-              <p className="mt-1">
-                <span className="bg-gradient-to-r from-primary via-purple-300 to-primary bg-clip-text text-transparent animate-sparkle">
-                  AI Powered
-                </span>
-                {"  "}
-                Formify  Builder
-              </p>
-            </h1>
-            <p className=" block text-lg mt-3 max-w-2xl mx-auto w-full font-medium text-black/70">
-              Create beautiful forms and share them anywhere. It takes
-              seconds,with our built in powered AI
-            </p>
-            <br />
-            <div className="flex items-center gap-2">
-              <Button className="h-12 text-base font-medium min-w-32" asChild>
-                <RegisterLink>
-                  Get Started
-                  <ExternalLink />
-                </RegisterLink>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-12  border-primary text-primary text-base font-medium min-w-32"
-                asChild
-              >
-                <a className="flex items-center gap-1">
-                  <Video size="17px" />
-                  Watch video
-                </a>
-              </Button>
-            </div>
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 to-cyan-100">
+      <div className="w-full max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900">
+            <span className="block">Create Forms with AI</span>
+            <span className="block mt-2 bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+              Powered by Formify
+            </span>
+          </h1>
+          <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
+            Design beautiful, intelligent forms in seconds. Let our AI do the heavy lifting while you focus on what matters most.
+          </p>
+          <div className="mt-10 flex justify-center gap-4">
+            <Button className="h-12 px-8 text-lg font-semibold" asChild>
+              <RegisterLink>
+                Get Started
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </RegisterLink>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 px-8 text-lg font-semibold text-blue-600 border-blue-600 hover:bg-blue-50"
+            >
+              Learn More
+            </Button>
           </div>
         </div>
-        <div className="w-full relative max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="absolute top-15 left-1/2 transform -translate-x-1/2 w-full h-[200px] bg-gradient-to-r from-primary to-purple-500 rounded-full blur-3xl opacity-40 z-0" />
-          <div className="w-full h-[400px] md:h-[500px] lg:h-[580px] rounded-xl shadow-lg bg-transparent">
-            <div className="relative w-full h-full rounded-md">
-              <Image
-                src="/images/board-img.png"
-                alt="Formify AI dashboard"
-                fill
-                className="object-contain w-full h-full rounded-md"
-              />
-            </div>
+
+        <div className="mt-20 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-cyan-200 rounded-2xl transform -skew-y-6 sm:skew-y-0 sm:-rotate-3 sm:rounded-3xl"></div>
+          <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
+            <Image
+              src="/hero.jpeg"
+              alt="Formify AI Form Builder"
+              width={1920}
+              height={800}
+              className="w-full h-[400px] object-cover object-center"
+            />
           </div>
+        </div>
+
+        <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { title: "AI-Powered Design", icon: Wand2, description: "Let our AI suggest the best form layouts and question types based on your needs." },
+            { title: "Instant Creation", icon: ChevronRight, description: "Create complex forms in seconds, not hours. Save time and boost productivity." },
+            { title: "Smart Analytics", icon: ChevronRight, description: "Gain insights from responses with our built-in AI-driven analytics." },
+          ].map((feature, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-md p-6">
+              <feature.icon className="h-12 w-12 text-blue-500 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
+              <p className="mt-2 text-gray-600">{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
-      <br />
-      <br />
-      <br />
     </div>
   );
 }
