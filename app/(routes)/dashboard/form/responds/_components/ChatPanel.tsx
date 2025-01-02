@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { TypingIndicator } from "./TypingIndicator";
+// import { TypingIndicator } from "@/components/ui/typing-indicator";
 
 interface ChatPanelProps {
   formId: string;
@@ -16,6 +18,7 @@ interface Message {
   content: string;
   role: 'user' | 'assistant';
   timestamp: Date;
+  isStreaming?: boolean;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
@@ -35,7 +38,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!message.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -44,7 +47,15 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const tempAssistantMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: "",
+      role: 'assistant',
+      timestamp: new Date(),
+      isStreaming: true
+    };
+
+    setMessages(prev => [...prev, userMessage, tempAssistantMessage]);
     setMessage("");
     setIsLoading(true);
 
@@ -54,17 +65,34 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formId, message: userMessage.content }),
       });
-
+      
       const data = await response.json();
       
       if (response.ok) {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: data.response,
-          role: 'assistant',
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
+        // Simulate streaming effect
+        const finalContent = data.response;
+        let currentContent = "";
+        
+        for (let i = 0; i < finalContent.length; i++) {
+          currentContent += finalContent[i];
+          setMessages(prev => 
+            prev.map(msg => 
+              msg.id === tempAssistantMessage.id
+                ? { ...msg, content: currentContent }
+                : msg
+            )
+          );
+          await new Promise(resolve => setTimeout(resolve, 20));
+        }
+
+        // Update final message
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === tempAssistantMessage.id
+              ? { ...msg, isStreaming: false }
+              : msg
+          )
+        );
       } else {
         throw new Error(data.error);
       }
@@ -80,7 +108,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
       <Button
         size="icon"
         className={cn(
-          "fixed bottom-4 right-4 rounded-full p-4 shadow-lg",
+          "fixed bottom-4 right-4 rounded-full p-4 shadow-lg transition-colors duration-200",
           isOpen && "bg-red-500 hover:bg-red-600",
           !isOpen && "bg-primary hover:bg-primary/90"
         )}
@@ -98,16 +126,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
           <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-2">
             {messages.map(msg => (
               <div key={msg.id} className="flex items-start gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  {msg.role === 'user' ? <Bot className="h-4 w-4 text-primary" /> : <Bot className="h-4 w-4 text-secondary" />}
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  {msg.role === 'user' ? 
+                    <Bot className="h-6 w-6 text-primary" /> : 
+                    <Bot className="h-6 w-6 text-secondary" />
+                  }
                 </div>
                 <div className="flex-1">
                   <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 text-sm">
                     {msg.content}
+                    {msg.isStreaming && (
+                      <TypingIndicator className="mt-2" />
+                    )}
                   </div>
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           <form onSubmit={handleSubmit} className="flex gap-2">
@@ -116,8 +151,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask about your form responses..."
               className="flex-1"
+              disabled={isLoading}
             />
-            <Button type="submit">Send</Button>
+            <Button 
+              type="submit" 
+              disabled={isLoading || !message.trim()}
+            >
+              Send
+            </Button>
           </form>
         </Card>
       )}
@@ -126,4 +167,3 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ formId }) => {
 };
 
 export default ChatPanel;
-
