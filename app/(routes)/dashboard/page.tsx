@@ -70,6 +70,16 @@ async function StatsListWrap() {
 
 async function FormList() {
   const { form } = await fetchAllForms();
+  
+  if (!form?.length) {
+    return (
+      <div className="col-span-full flex flex-col items-center justify-center py-10 text-muted-foreground">
+        <p className="text-lg">No forms created yet</p>
+        <p className="text-sm">Create your first form to get started</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {form?.map((form) => (
