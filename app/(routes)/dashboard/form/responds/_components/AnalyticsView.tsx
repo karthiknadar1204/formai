@@ -34,6 +34,7 @@ type Props = {
     createdAt: Date;
     jsonReponse: string;
   }[];
+  visualizationType?: string;
 };
 
 const AnalyticsView: FC<Props> = ({ blocks, responses }) => {
