@@ -9,6 +9,7 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
+
 // Initialize Pinecone
 export const initPinecone = async () => {
   if (!process.env.PINECONE_API_KEY) {

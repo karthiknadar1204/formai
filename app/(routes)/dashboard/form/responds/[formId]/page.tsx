@@ -79,10 +79,12 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
           </div>
         </div>
       </div>
-      <ChatPanel formId={formId} />
+      <ChatPanel formId={formId} blocks={blocks} responses={responses} />
     </main>
   );
 };
 
+
 export default Responds;
+
 
