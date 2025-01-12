@@ -34,7 +34,7 @@ const NotAvaliable = () => {
         <p className="text-sm text-gray-600 mb-1">Powered by</p>
         <h5 className="font-black text-2xl bg-gradient-to-r from-sky-600 to-sky-800 
         bg-clip-text text-transparent">
-          Formify.ai
+          Formify
         </h5>
       </div>
     </div>
