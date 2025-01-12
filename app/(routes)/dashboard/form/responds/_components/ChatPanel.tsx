@@ -57,6 +57,40 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const initialMessage: Message = {
+        id: 'initial-message',
+        content: "👋 Welcome! I can help you analyze your form responses. You can:\n\n" +
+          "• Ask questions about response patterns and trends\n" +
+          "• Request visualizations like pie charts or bar graphs\n" +
+          "• Get statistical insights from your data\n\n" +
+          "Try asking something like 'Show me a pie chart of responses' or 'What are the most common answers?'",
+        role: 'assistant',
+        timestamp: new Date(),
+        isStreaming: true
+      };
+      setMessages([initialMessage]);
+      
+      // Simulate streaming effect
+      const words = initialMessage.content.split(' ');
+      let currentText = '';
+      
+      words.forEach((word, index) => {
+        setTimeout(() => {
+          currentText += (index === 0 ? '' : ' ') + word;
+          setMessages([{
+            ...initialMessage,
+            content: currentText,
+            isStreaming: index < words.length - 1
+          }]);
+        }, index * 50);
+      });
+    } else {
+      setMessages([]);
+    }
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || isLoading) return;
@@ -72,7 +106,25 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
     setMessage("");
     setIsLoading(true);
 
+    // Add loading message
+    const loadingMessage: Message = {
+      id: 'loading-' + Date.now(),
+      content: "Thinking... 🤔",
+      role: 'assistant',
+      timestamp: new Date(),
+      isStreaming: true
+    };
+    setMessages(prev => [...prev, loadingMessage]);
+
     try {
+      // Get previous messages excluding system messages and loading states
+      const conversationHistory = messages
+        .filter(msg => !msg.isStreaming && msg.role !== 'system')
+        .map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }));
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,11 +132,15 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
           formId,
           message: userMessage.content,
           blocks,
-          responses
+          responses,
+          conversationHistory // Add conversation history to the request
         })
       });
 
       const data = await response.json();
+      
+      // Remove loading message and add actual response
+      setMessages(prev => prev.filter(msg => msg.id !== loadingMessage.id));
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -101,6 +157,8 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
+      // Remove loading message in case of error too
+      setMessages(prev => prev.filter(msg => msg.id !== loadingMessage.id));
       console.error('Error:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -150,16 +208,35 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
         <Card className="fixed bottom-20 right-4 w-[400px] h-[500px] p-4 shadow-xl flex flex-col">
           <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-2">
             {messages.map(msg => (
-              <div key={msg.id} className="flex items-start gap-2">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <div 
+                key={msg.id} 
+                className={cn(
+                  "flex items-start gap-2",
+                  msg.role === 'user' ? "flex-row-reverse" : "flex-row"
+                )}
+              >
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   {msg.role === 'user' ? 
                     <Bot className="h-6 w-6 text-primary" /> : 
                     <Bot className="h-6 w-6 text-secondary" />
                   }
                 </div>
-                <div className="flex-1">
-                  <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 text-sm">
-                    {msg.type === 'text' ? msg.message : (
+                <div className={cn(
+                  "flex-1 max-w-[80%]",
+                  msg.role === 'user' ? "flex justify-end" : "flex justify-start"
+                )}>
+                  <div className={cn(
+                    "rounded-2xl p-4 text-sm",
+                    msg.role === 'user' 
+                      ? "bg-primary text-white rounded-tr-none" 
+                      : "bg-gray-100 rounded-tl-none"
+                  )}>
+                    {msg.isStreaming ? (
+                      <>
+                        {msg.content}
+                        <TypingIndicator className="mt-2" />
+                      </>
+                    ) : (
                       <>
                         {msg.content}
                         {msg.visualizationOptions && (

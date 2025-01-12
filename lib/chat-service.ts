@@ -40,21 +40,35 @@ export class ChatService {
    - Pie/Bar charts for multiple choice, radio, or rating questions
    - Line/Area charts for numeric or time-based data
 5. Format responses clearly and support with specific examples
-6. Be concise yet comprehensive in analysis`
+6. Be concise yet comprehensive in analysis
+
+For generic questions like "What can you help me with?", I can:
+• Ask questions about response patterns and trends
+• Request visualizations like pie charts or bar graphs
+• Get statistical insights from your data
+
+Try asking something like 'Show me a pie chart of responses' or 'What are the most common answers?'`
     }];
   }
 
-  async queryFormResponses(formId: string, userQuestion: string, blocks?: FormBlockInstance[]) {
+  async queryFormResponses(formId: string, userQuestion: string, blocks?: FormBlockInstance[], conversationHistory: ChatMessage[] = []) {
     try {
-      const action = await taskManager(userQuestion, blocks || [])
+      // Update context with conversation history
+      this.context = [
+        this.context[0], // Keep the system message
+        ...conversationHistory, // Add previous conversation
+        { role: "user", content: userQuestion } // Add current question
+      ];
+
+      const action = await taskManager(userQuestion, blocks || [], this.context)
       
       if (action.next === 'visualize') {
-        return await visualizer(formId, userQuestion, blocks || [], action.type || 'graphical')
+        return await visualizer(formId, userQuestion, blocks || [], action.type || 'graphical', this.context)
       }
       
       return {
         type: "text",
-        message: await analyzer(formId, userQuestion, blocks || [])
+        message: await analyzer(formId, userQuestion, blocks || [], this.context)
       }
     } catch (error) {
       logger.error("Error in queryFormResponses:", error)
@@ -67,4 +81,3 @@ export class ChatService {
     this.context = [systemMessage, ...this.context.slice(-4)];
   }
 }
-

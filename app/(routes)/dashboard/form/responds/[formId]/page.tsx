@@ -50,10 +50,6 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
                 className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
                 asChild
               >
-                <a href={`/dashboard/form/responds/${formId}/analytics`}>
-                  <BarChart className="w-4 h-4 text-indigo-600" />
-                  <span>Analytics</span>
-                </a>
               </Button>
 
               <a
@@ -86,3 +82,4 @@ const Responds = async ({ params }: { params: { formId: string } }) => {
 };
 
 export default Responds;
+
