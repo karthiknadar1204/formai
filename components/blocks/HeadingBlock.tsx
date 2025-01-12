@@ -44,7 +44,7 @@ type fontWeightType = "normal" | "bold" | "bolder" | "lighter";
 
 type attributesType = {
   label: string;
-  level: 1 | 2 | 3 | 4 | 5 | 6; // Corresponds to heading levels (h1 - h6)
+  level: 1 | 2 | 3 | 4 | 5 | 6;
   fontSize: fontSizeType;
   fontWeight: fontWeightType;
 };
@@ -53,7 +53,7 @@ type propertiesValidateSchemaType = z.infer<typeof propertiesValidateSchema>;
 
 const propertiesValidateSchema = z.object({
   label: z.string().trim().min(2).max(255),
-  level: z.number().min(1).max(6).default(1), // Defaults to H1
+  level: z.number().min(1).max(6).default(1),
   fontSize: z
     .enum(["small", "medium", "large", "x-large", "2x-large", "4x-large"])
     .default("medium"),
@@ -68,7 +68,7 @@ export const HeadingBlock: ObjectBlockType = {
     blockType,
     attributes: {
       label: "Heading",
-      level: 1, // Default to H1
+      level: 1,
       fontSize: "medium",
       fontWeight: "normal",
     },
@@ -77,9 +77,9 @@ export const HeadingBlock: ObjectBlockType = {
     icon: HeadingIcon,
     label: "Heading",
   },
-  canvasComponent: HeadingCanvasFormComponent, // Renders the heading block on the canvas
-  formComponent: HeadingCanvasFormComponent, // Customize as needed
-  propertiesComponent: HeadingPropertiesComponent, // Properties editor
+  canvasComponent: HeadingCanvasFormComponent,
+  formComponent: HeadingCanvasFormComponent,
+  propertiesComponent: HeadingPropertiesComponent,
 };
 
 type NewInstance = FormBlockInstance & {
@@ -95,13 +95,13 @@ function HeadingCanvasFormComponent({
   const { level, label, fontSize, fontWeight } = block.attributes;
   return (
     <div
-      className={`w-full text-left
-         ${fontSizeClass[fontSize]} ${fontWeightClass[fontWeight]}`}
+      className={`w-full text-left transition-all duration-200 ease-in-out
+         ${fontSizeClass[fontSize]} ${fontWeightClass[fontWeight]} hover:text-primary`}
     >
       {React.createElement(
-        `h${level}`, // Dynamically create heading tag based on 'level'
-        {}, // No additional props for the heading element
-        label // Label for the heading
+        `h${level}`,
+        {},
+        label
       )}
     </div>
   );
@@ -145,38 +145,43 @@ function HeadingPropertiesComponent({
       ...block,
       attributes: {
         ...block.attributes,
-        ...values, // Merge new values into block's attributes
+        ...values,
       },
     });
   }
 
   return (
-    <div className="w-full pb-4">
-      <div className="w-full flex flex-row items-center justify-between gap-1 bg-gray-100 h-auto p-1 px-2 mb-[10px]">
-        <span className="text-sm font-medium text-gray-600 tracking-wider">
-          Heading {positionIndex}
-        </span>
-        <ChevronDown className="w-4 h-4" />
+    <div className="w-full pb-4 bg-white rounded-lg shadow-sm border border-gray-100">
+      <div className="w-full flex flex-row items-center justify-between gap-1 bg-gradient-to-r from-gray-50 to-white p-3 border-b border-gray-100 rounded-t-lg">
+        <div className="flex items-center gap-2">
+          <HeadingIcon className="w-4 h-4 text-primary" />
+          <span className="text-sm font-medium text-gray-700">
+            Heading {positionIndex}
+          </span>
+        </div>
+        <ChevronDown className="w-4 h-4 text-gray-400" />
       </div>
+
       <Form {...form}>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="w-full space-y-3 px-4"
+          className="w-full space-y-4 p-4"
         >
-          {/* Label */}
-          <FormField
-            control={form.control}
-            name="label"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-baseline justify-between w-full gap-2">
-                  <FormLabel className="text-[13px] font-normal">
-                    Label
-                  </FormLabel>
-                  <div className="w-full max-w-[187px]">
+          <div className="grid gap-4">
+            {/* Label */}
+            <FormField
+              control={form.control}
+              name="label"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col gap-1.5">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Label
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         onChange={(e) => {
                           field.onChange(e);
                           setChanges({
@@ -186,28 +191,60 @@ function HeadingPropertiesComponent({
                         }}
                       />
                     </FormControl>
-                    <FormDescription></FormDescription>
                   </div>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Font Size */}
-          <FormField
-            control={form.control}
-            name="fontSize"
-            render={({ field }) => (
-              <FormItem>
-                <div
-                  className="flex items-baseline justify-between 
-                w-full gap-2"
-                >
-                  <FormLabel className="text-[13px] font-normal">
-                    Font Size
-                  </FormLabel>
-                  <div className="w-full max-w-[187px]">
+            {/* Level */}
+            <FormField
+              control={form.control}
+              name="level"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col gap-1.5">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Heading Level
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setChanges({
+                            ...form.getValues(),
+                            level: Number(value),
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[1, 2, 3, 4, 5, 6].map((level) => (
+                            <SelectItem key={level} value={level.toString()}>
+                              H{level}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Font Size */}
+            <FormField
+              control={form.control}
+              name="fontSize"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col gap-1.5">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Font Size
+                    </FormLabel>
                     <FormControl>
                       <Select
                         {...field}
@@ -219,37 +256,35 @@ function HeadingPropertiesComponent({
                           });
                         }}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Font Size" />
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Select size" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="small">Small</SelectItem>
                           <SelectItem value="medium">Medium</SelectItem>
                           <SelectItem value="large">Large</SelectItem>
-                          <SelectItem value="x-large">Xtra Large</SelectItem>
-                          <SelectItem value="2x-large">2Xtra Large</SelectItem>
-                          <SelectItem value="4x-large">4Xtra Large</SelectItem>
+                          <SelectItem value="x-large">Extra Large</SelectItem>
+                          <SelectItem value="2x-large">2x Large</SelectItem>
+                          <SelectItem value="4x-large">4x Large</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
                   </div>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Font Weight */}
-          <FormField
-            control={form.control}
-            name="fontWeight"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-baseline justify-between w-full gap-2">
-                  <FormLabel className="text-[13px] font-normal">
-                    Weight
-                  </FormLabel>
-                  <div className="w-full max-w-[187px]">
+            {/* Font Weight */}
+            <FormField
+              control={form.control}
+              name="fontWeight"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col gap-1.5">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Font Weight
+                    </FormLabel>
                     <FormControl>
                       <Select
                         {...field}
@@ -261,64 +296,23 @@ function HeadingPropertiesComponent({
                           });
                         }}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Font Weight" />
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Select weight" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="normal">Normal</SelectItem>
+                          <SelectItem value="lighter">Light</SelectItem>
+                          <SelectItem value="normal">Regular</SelectItem>
                           <SelectItem value="bold">Bold</SelectItem>
                           <SelectItem value="bolder">Bolder</SelectItem>
-                          <SelectItem value="lighter">Lighter</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
                   </div>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Heading Level */}
-          <FormField
-            control={form.control}
-            name="level"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-baseline justify-between w-full gap-2">
-                  <FormLabel className="text-[13px] font-normal">
-                    Level
-                  </FormLabel>
-                  <div className="w-full max-w-[187px]">
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          setChanges({
-                            ...form.getValues(),
-                            level: Number(value),
-                          });
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Heading Level" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">H1</SelectItem>
-                          <SelectItem value="2">H2</SelectItem>
-                          <SelectItem value="3">H3</SelectItem>
-                          <SelectItem value="4">H4</SelectItem>
-                          <SelectItem value="5">H5</SelectItem>
-                          <SelectItem value="6">H6</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </form>
       </Form>
     </div>

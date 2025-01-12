@@ -18,7 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import { FileTextIcon, Home } from "lucide-react";
 import FormBlockBox from "./_common/FormBlockBox";
-import FormSettings from "./_common/FormSettings";
 import { useBuilder } from "@/context/builder-provider";
 
 const BuilderSidebar = ({
@@ -28,7 +27,7 @@ const BuilderSidebar = ({
 }) => {
   const { formData } = useBuilder();
 
-  const [tab, setTab] = useState<"blocks" | "settings">("blocks");
+  const [tab, setTab] = useState<"blocks">("blocks");
 
   return (
     <Sidebar className="border-r left-12 pt-16" {...rest}>
@@ -85,27 +84,8 @@ const BuilderSidebar = ({
             >
               Blocks
             </button>
-            <button
-              type="button"
-              className={cn(
-                `p-[5px] flex-1 bg-transparent
-                transition-colors
-                ease-in-out rounded-full text-center
-                font-medium text-sm
-                              `,
-                {
-                  "bg-white": tab === "settings",
-                }
-              )}
-              onClick={() => setTab("settings")}
-            >
-              Settings
-            </button>
           </div>
-          {/* {Form Blocks} */}
           {tab === "blocks" && <FormBlockBox />}
-          {/* {Form Settings} */}
-          {tab === "settings" && <FormSettings />}
         </div>
       </SidebarContent>
     </Sidebar>
