@@ -5,13 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader, PlusIcon } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -67,77 +67,76 @@ const CreateForm = () => {
       });
     }
   };
+
   return (
     <>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
           <Button className="!bg-primary !font-medium gap-1">
             <PlusIcon />
             Create a form
           </Button>
-        </SheetTrigger>
-        <SheetContent side="bottom">
-          <div className="w-full max-w-5xl mx-auto">
-            <SheetHeader>
-              <SheetTitle>Create New Form</SheetTitle>
-              <SheetDescription>
-                This will create a new form. Ensure all details are accurate.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="w-full dialog-content">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Create New Form</DialogTitle>
+            <DialogDescription>
+              This will create a new form. Ensure all details are accurate.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="w-full">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          placeholder="Form name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Form description" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  disabled={form.formState.isSubmitting}
+                  className="w-full !bg-primary"
                 >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            autoComplete="off"
-                            placeholder="Form name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Form description" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    disabled={form.formState.isSubmitting}
-                    className="px-5 flex place-self-end !bg-primary"
-                  >
-                    {form.formState.isSubmitting && (
-                      <Loader className="w-4 h-4 animate-spin" />
-                    )}
-                    Create
-                  </Button>
-                </form>
-              </Form>
-            </div>
+                  {form.formState.isSubmitting && (
+                    <Loader className="w-4 h-4 animate-spin mr-2" />
+                  )}
+                  Create
+                </Button>
+              </form>
+            </Form>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

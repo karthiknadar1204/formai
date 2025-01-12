@@ -21,6 +21,7 @@ type PropsType = {
   published: boolean;
   backgroundColor: string;
 };
+
 const FormItem = (props: PropsType) => {
   const {
     id,
@@ -30,111 +31,72 @@ const FormItem = (props: PropsType) => {
     createdAt,
     responses = 0,
     views = 0,
+    backgroundColor,
   } = props;
 
   const router = useRouter();
 
   const onClick = useCallback(() => {
     router.push(`/dashboard/form/builder/${formId}`);
-  }, []);
-  return (
-    <div onClick={onClick} role="button" className="w-full h-auto">
-      <div
-        className="w-full relative flex 
-      items-center justify-center
-      overflow-hidden h-[150px] rounded-t-xl border border-gray-300
-      bg-gradient-to-b from-primary/10 to-primary/10
-      "
-      >
-        <div
-          className=" w-36 absolute bottom-0 
-                flex items-center 
-        flex-col
-        px-4 pt-6
-        h-32 rounded-t-xl
-         bg-white shadow-lg"
-        >
-          <h5
-            className="text-sm font-medium mb-1 text-center
-          text-gray-400 truncate block w-[200px]
-          "
-          >
-            {name}
-          </h5>
-          {[0, 1, 2].map((item) => (
-            <div
-              key={item}
-              className="flex
-             items-center
-             gap-1 mb-2"
-            >
-              <Skeleton
-                className="h-3 w-3 
-              rounded-full shrink-0"
-              />
-              <Skeleton className="h-[11px] w-[75px]" />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="w-full py-0">
-        <div
-          className="flex w-full items-center
-         justify-between py-1"
-        >
-          <span
-            className="text-sm flex items-center gap-1 font-medium
-                  "
-          >
-            {published ? (
-              <Globe className="text-muted-foreground size-3" />
-            ) : (
-              <LockKeyholeIcon className="text-muted-foreground size-3" />
-            )}
-            {name}
-          </span>
-          <EllipsisIcon className="text-gray-700 size-4" />
-        </div>
-        <div
-          className="flex w-full border-t border-gray-300
-        items-center justify-between py-1
-        "
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className="text-muted-foreground flex 
-                      items-center gap-1 font-[14px]"
-            >
-              {responses}
-              <MessageSquare
-                className="text-muted-foreground 
-              size-[14px]"
-              />
-            </span>
+  }, [formId, router]);
 
-            <span
-              className="text-muted-foreground 
-            flex items-center gap-1 text-[14px]"
-            >
-              {views}
-              <ActivityIcon
-                className="text-muted-foreground
-               size-[14px]"
-              />
+  return (
+    <button
+      onClick={onClick}
+      className="group w-full bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden"
+    >
+      <div 
+        style={{backgroundColor: backgroundColor || '#4F46E5'}}
+        className="w-full h-32 relative p-4 bg-gradient-to-br from-primary/80 to-primary"
+      >
+        <div className="absolute top-4 right-4">
+          {published ? (
+            <Globe className="text-white/80 size-5" />
+          ) : (
+            <LockKeyholeIcon className="text-white/80 size-5" />
+          )}
+        </div>
+        
+        <h3 className="text-lg font-semibold text-white mt-8 truncate pr-8">
+          {name}
+        </h3>
+        
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
+      </div>
+
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-gray-900">{responses}</span>
+              <span className="text-xs text-gray-500">Responses</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-gray-900">{views}</span>
+              <span className="text-xs text-gray-500">Views</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <EllipsisIcon className="text-gray-400 size-5 hover:text-gray-600 cursor-pointer" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-sm text-gray-600">
+              {published ? 'Published' : 'Draft'}
             </span>
           </div>
-          <span
-            className="text-muted-foreground flex
-                  gap-1 text-[13px]
-                  "
-          >
+          <span className="text-sm text-gray-500">
             {formatDistanceToNowStrict(new Date(createdAt), {
               addSuffix: true,
             })}
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
 
