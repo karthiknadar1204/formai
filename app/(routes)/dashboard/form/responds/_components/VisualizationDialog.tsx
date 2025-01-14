@@ -4,12 +4,35 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AnalyticsView from './AnalyticsView';
 import { Card, CardContent } from '@/components/ui/card';
+import { FormBlockInstance } from '@/@types/form-block.type';
+
+interface Message {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
+  isStreaming?: boolean;
+  visualizationOptions?: {
+    type: "numeric" | "graphical";
+    graphType?: string;
+    questions: Array<{
+      id: string;
+      visualType: string;
+    }>;
+  };
+  message?: string;
+}
 
 interface VisualizationDialogProps {
   message: Message;
   onClose: () => void;
   blocks: FormBlockInstance[];
   responses: any[];
+}
+
+// Define a type that ensures childblocks is non-undefined
+interface ProcessedFormBlock extends FormBlockInstance {
+  childblocks: FormBlockInstance[];
 }
 
 export const VisualizationDialog: React.FC<VisualizationDialogProps> = ({
@@ -27,13 +50,13 @@ export const VisualizationDialog: React.FC<VisualizationDialogProps> = ({
       return [];
     }
     
-    const filtered = blocks.map(block => {
-      // Check child blocks for matching label
-      if (block.childblocks?.length > 0) {
+    return blocks.map(block => {
+      // Check if childblocks exists and has items
+      if (Array.isArray(block.childblocks) && block.childblocks.length > 0) {
         const matchingChildren = block.childblocks.filter(child =>
           message.visualizationOptions?.questions.some(q => {
             const match = child.attributes?.label?.toLowerCase() === q.id.toLowerCase();
-            console.log('Checking label match:', child.attributes?.label, 'with', q.id, '=', match);
+            console.log('Checking label match:', child.attributes?.label, 'with', q.id);
             return match;
           })
         );
@@ -42,15 +65,13 @@ export const VisualizationDialog: React.FC<VisualizationDialogProps> = ({
           return {
             ...block,
             childblocks: matchingChildren
-          };
+          } as ProcessedFormBlock;
         }
       }
       
       return null;
-    }).filter(Boolean);
+    }).filter((block): block is ProcessedFormBlock => block !== null);
     
-    console.log('Final filtered blocks:', filtered);
-    return filtered;
   }, [blocks, message.visualizationOptions]);
 
   if (!filteredBlocks || filteredBlocks.length === 0) {
@@ -85,13 +106,6 @@ export const VisualizationDialog: React.FC<VisualizationDialogProps> = ({
           </Button>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {message.message && (
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground">{message.message}</p>
-              </CardContent>
-            </Card>
-          )}
           <AnalyticsView
             blocks={filteredBlocks}
             responses={responses}

@@ -60,15 +60,15 @@ Try asking something like 'Show me a pie chart of responses' or 'What are the mo
         { role: "user", content: userQuestion } // Add current question
       ];
 
-      const action = await taskManager(userQuestion, blocks || [], this.context)
+      const action = await taskManager(userQuestion, blocks || [])
       
       if (action.next === 'visualize') {
-        return await visualizer(formId, userQuestion, blocks || [], action.type || 'graphical', this.context)
+        return await visualizer(formId, userQuestion, blocks || [], action.type || 'graphical')
       }
       
       return {
         type: "text",
-        message: await analyzer(formId, userQuestion, blocks || [], this.context)
+        message: await analyzer(formId, userQuestion, blocks || [])
       }
     } catch (error) {
       logger.error("Error in queryFormResponses:", error)

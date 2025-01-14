@@ -119,7 +119,7 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
     try {
       // Get previous messages excluding system messages and loading states
       const conversationHistory = messages
-        .filter(msg => !msg.isStreaming && msg.role !== 'system')
+        .filter(msg => !msg.isStreaming)
         .map(msg => ({
           role: msg.role,
           content: msg.content

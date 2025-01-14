@@ -2,6 +2,11 @@ import { OpenAI } from 'openai'
 import { FormBlockInstance } from '@/@types/form-block.type'
 import { generateEmbeddings, initPinecone } from '../embeddings'
 
+interface VisualizationQuestion {
+  id: string;
+  visualType: "bar" | "pie" | "line" | "area";
+}
+
 export async function visualizer(
   formId: string,
   userQuestion: string,
@@ -89,7 +94,7 @@ Relevant Responses: ${relevantResponses}`
       type: "visualization",
       visualizationOptions: {
         type: options.type,
-        questions: options.questions.map(q => ({
+        questions: options.questions.map((q: VisualizationQuestion) => ({
           ...q,
           id: q.id.toLowerCase()
         }))
