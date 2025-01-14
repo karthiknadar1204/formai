@@ -196,16 +196,16 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
       <Button
         size="icon"
         className={cn(
-          "fixed bottom-4 right-4 rounded-full p-4 shadow-lg",
+          "fixed bottom-4 right-4 rounded-full p-3 sm:p-4 shadow-lg z-50",
           isOpen ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-6 w-6" />}
+        {isOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Bot className="h-5 w-5 sm:h-6 sm:w-6" />}
       </Button>
 
       {isOpen && (
-        <Card className="fixed bottom-20 right-4 w-[400px] h-[500px] p-4 shadow-xl flex flex-col">
+        <Card className="fixed bottom-20 right-4 w-[calc(100vw-32px)] sm:w-[400px] h-[500px] p-3 sm:p-4 shadow-xl flex flex-col z-40">
           <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-2">
             {messages.map(msg => (
               <div 
@@ -215,18 +215,18 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
                   msg.role === 'user' ? "flex-row-reverse" : "flex-row"
                 )}
               >
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   {msg.role === 'user' ? 
-                    <Bot className="h-6 w-6 text-primary" /> : 
-                    <Bot className="h-6 w-6 text-secondary" />
+                    <Bot className="h-4 w-4 sm:h-6 sm:w-6 text-primary" /> : 
+                    <Bot className="h-4 w-4 sm:h-6 sm:w-6 text-secondary" />
                   }
                 </div>
                 <div className={cn(
-                  "flex-1 max-w-[80%]",
+                  "flex-1 max-w-[85%] sm:max-w-[80%]",
                   msg.role === 'user' ? "flex justify-end" : "flex justify-start"
                 )}>
                   <div className={cn(
-                    "rounded-2xl p-4 text-sm",
+                    "rounded-2xl p-3 sm:p-4 text-sm",
                     msg.role === 'user' 
                       ? "bg-primary text-white rounded-tr-none" 
                       : "bg-gray-100 rounded-tl-none"
@@ -264,10 +264,14 @@ export const ChatPanel = ({ formId, blocks, responses }: ChatPanelProps) => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask about your form responses..."
-              className="flex-1"
+              className="flex-1 text-sm sm:text-base"
               disabled={isLoading}
             />
-            <Button type="submit" disabled={isLoading || !message.trim()}>
+            <Button 
+              type="submit" 
+              disabled={isLoading || !message.trim()}
+              className="px-3 sm:px-4"
+            >
               Send
             </Button>
           </form>

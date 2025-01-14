@@ -15,9 +15,9 @@ const BuilderBlockProperties = () => {
     FormBlocks[selectedBlockLayout.blockType]?.propertiesComponent;
 
   return (
-    <div className="relative w-[320px]">
+    <div className="relative w-full sm:w-[320px]">
       <div
-        className="fixed right w-[320px]
+        className="fixed right-0 w-full sm:w-[320px]
       bg-white border-l shadow-sm
       h-screen pb-36 mt-0 scrollbar overflow-auto
       "
@@ -30,7 +30,7 @@ const BuilderBlockProperties = () => {
           <div
             className="w-full flex 
             flex-row items-center
-            bg-white pb-2 pt-3 sticky border-b
+            flex-wrap sm:flex-nowrap bg-white pb-2 pt-3 sticky border-b
             border-gray-200 top-0 gap-2 px-2"
           >
             <PreviewDialog />

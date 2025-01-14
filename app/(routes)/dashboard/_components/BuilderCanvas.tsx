@@ -111,16 +111,12 @@ const BuilderCanvas = () => {
   });
   return (
     <div
-      className="relative w-full
-  h-[calc(100vh_-_65px)] px-5 md:px-0 pt-4 pb-[120px] overflow-auto
-  transition-all duration-300 scrollbar
-  "
+      className="relative w-full h-[calc(100vh_-_65px)] 
+        px-3 sm:px-5 md:px-0 pt-4 pb-[120px] 
+        overflow-auto transition-all duration-300 
+        scrollbar"
     >
-      <div
-        className="w-full 
-        h-full max-w-[650px]
-        mx-auto"
-      >
+      <div className="w-full h-full max-w-[650px] mx-auto">
         {/* {Droppable Canvas} */}
         <div
           ref={droppable.setNodeRef}

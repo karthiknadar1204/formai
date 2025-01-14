@@ -14,12 +14,7 @@ const FormBuilder = () => {
 
   if (loading) {
     return (
-      <div
-        className="w-full 
-    flex h-56
-     items-center ̰
-      justify-center"
-      >
+      <div className="w-full flex h-56 items-center justify-center">
         <Loader size="3rem" className="animate-spin" />
       </div>
     );
@@ -31,21 +26,20 @@ const FormBuilder = () => {
     },
   });
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(
-    isPublished ? false : true
-  );
+  const [isSidebarOpen, setIsSidebarOpen] = useState(isPublished ? false : true);
+  
   return (
-    <div>
+    <div className="relative w-full h-full">
       <DndContext sensors={useSensors(mouseSensor)}>
         <BuilderDragOverlay />
 
         <SidebarProvider
           open={isSidebarOpen}
           onOpenChange={setIsSidebarOpen}
-          className="h-[calc(100vh_-_64px)] "
+          className="h-[calc(100vh_-_64px)] overflow-hidden"
           style={
             {
-              "--sidebar-width": "300px",
+              "--sidebar-width": "min(300px, 80vw)",
               "--sidbar-height": "40px",
             } as React.CSSProperties
           }
