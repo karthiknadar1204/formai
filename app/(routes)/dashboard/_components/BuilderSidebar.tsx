@@ -30,14 +30,14 @@ const BuilderSidebar = ({
   const [tab, setTab] = useState<"blocks">("blocks");
 
   return (
-    <Sidebar className="border-r left-0 sm:left-12 pt-16 max-w-[80vw] sm:max-w-none" {...rest}>
-      <SidebarHeader className="bg-white px-0">
-        <header
-          className="border-b border-gray-200
-              w-full pt-1 pb-2 flex shrink-0 items-center gap-2
-              "
-        >
-          <div className="flex items-center gap-2 px-2 sm:px-4 overflow-hidden">
+    <Sidebar 
+      className="border-r fixed left-0 sm:left-[45px] pt-16 w-[85vw] sm:w-[300px] 
+        bg-white z-50 h-[calc(100vh_-_64px)]" 
+      {...rest}
+    >
+      <SidebarHeader className="bg-white px-0 sticky top-0">
+        <header className="border-b border-gray-200 w-full pt-1 pb-2 flex shrink-0 items-center gap-2">
+          <div className="flex items-center gap-2 px-3 sm:px-4 overflow-hidden">
             <Home className="min-w-4 h-4" />
             <Separator orientation="vertical" className="mr-2 h-4 hidden sm:block" />
             <Breadcrumb>
@@ -59,23 +59,15 @@ const BuilderSidebar = ({
           </div>
         </header>
       </SidebarHeader>
-      <SidebarContent
-        className="pt-2 
-      px-5 bg-white"
-      >
+
+      <SidebarContent className="pt-2 px-3 sm:px-5 bg-white h-full overflow-y-auto">
         <div className="w-full">
-          <div
-            className="w-full flex flex-row
-           gap-1 h-[39px] rounded-full bg-gray-100 p-1"
-          >
+          <div className="w-full flex flex-row gap-1 h-[39px] rounded-full bg-gray-100 p-1">
             <button
               type="button"
               className={cn(
-                `p-[5px] flex-1 bg-transparent
-                transition-colors
-                ease-in-out rounded-full text-center
-                font-medium text-sm
-                              `,
+                `p-[5px] flex-1 bg-transparent transition-colors ease-in-out 
+                rounded-full text-center font-medium text-sm`,
                 {
                   "bg-white": tab === "blocks",
                 }

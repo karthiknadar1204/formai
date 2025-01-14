@@ -39,8 +39,8 @@ const FormBuilder = () => {
           className="h-[calc(100vh_-_64px)] overflow-hidden"
           style={
             {
-              "--sidebar-width": "min(300px, 80vw)",
-              "--sidbar-height": "40px",
+              "--sidebar-width": "min(300px, 85vw)",
+              "--sidebar-height": "40px",
             } as React.CSSProperties
           }
         >
