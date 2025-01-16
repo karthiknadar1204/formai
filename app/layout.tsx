@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+import { Analytics } from '@vercel/analytics/next';
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`bg-white ${dm_sans.className} antialiased`}>
         {children}
+        <Analytics />
         <Toaster />
       </body>
     </html>
