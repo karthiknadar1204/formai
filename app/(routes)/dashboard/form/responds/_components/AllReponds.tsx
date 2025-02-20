@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { FormBlockInstance } from "@/@types/form-block.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, Key } from "lucide-react";
+import { ResponseCell } from "./ResponseCell";
 
 type Props = {
   blocks: FormBlockInstance[];
@@ -51,7 +52,7 @@ const AllReponds: FC<Props> = ({ blocks, responses }) => {
                       {childblockMap[key] || "Unknown Field"}
                     </div>
                     <div className="text-sm pl-1 text-gray-600 break-words">
-                      - {value}
+                      <ResponseCell value={value} type={blocks.find(b => b.id === key)?.blockType} />
                     </div>
                   </div>
                 ))}

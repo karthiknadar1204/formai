@@ -7,7 +7,8 @@ export type FormBlockType =
   | "TextArea"
   | "StarRating"
   | "Heading"
-  | "Paragraph";
+  | "Paragraph"
+  | "Media";
 
 export type HandleBlurFunc = (key: string, value: string) => void;
 
@@ -54,4 +55,15 @@ export type FormBlockInstance = {
 
 export type FormBlocksType = {
   [key in FormBlockType]: ObjectBlockType;
+};
+
+export type NewInstance = FormBlockInstance & {
+  attributes: {
+    label: string;
+    required: boolean;
+    acceptedTypes: string[];
+    maxFileSize: number;
+    mediaUrl?: string;
+    mediaType?: string;
+  };
 };
