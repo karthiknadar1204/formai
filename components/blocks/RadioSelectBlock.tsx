@@ -33,6 +33,7 @@ import {
     label: string;
     options: string[];
     required: boolean;
+    allowMultiple: boolean;
   };
   
   type propertiesValidateSchemaType = z.infer<typeof propertiesValidateSchema>;
@@ -41,6 +42,7 @@ import {
     label: z.string().trim().min(2).max(255),
     required: z.boolean().default(false),
     options: z.array(z.string().min(1)),
+    allowMultiple: z.boolean().default(false),
   });
   
   export const RadioSelectBlock: ObjectBlockType = {
@@ -54,6 +56,7 @@ import {
         label: "Select an option",
         options: ["Option 1", "Option 2"],
         required: false,
+        allowMultiple: false,
       },
     }),
   
@@ -77,40 +80,29 @@ import {
     blockInstance: FormBlockInstance;
   }) {
     const block = blockInstance as NewInstance;
-  
-    const { label, options, required } = block.attributes;
+    const { label, options, required, allowMultiple } = block.attributes;
   
     return (
-      <div
-        className="flex flex-col
-    gap-3 w-full
-      "
-      >
-        <Label
-          className="
-       text-base !font-normal mb-2
-       "
-        >
+      <div className="flex flex-col gap-3 w-full">
+        <Label className="text-base !font-normal mb-2">
           {label}
           {required && <span className="text-red-500">*</span>}
         </Label>
   
-        <RadioGroup
-          disabled={true}
-          className="space-y-3
-          disabled:cursor-default 
-          !pointer-events-none
-          !cursor-default"
-        >
+        <div className="space-y-3">
           {options?.map((option: string, index: number) => (
             <div key={index} className="flex items-center space-x-2">
-              <RadioGroupItem disabled value={option} id={option} />
+              <div
+                className={`flex h-4 w-4 shrink-0 rounded-${
+                  allowMultiple ? 'sm' : 'full'
+                } border border-primary disabled:cursor-default`}
+              />
               <Label htmlFor={option} className="!font-normal">
                 {option}
               </Label>
             </div>
           ))}
-        </RadioGroup>
+        </div>
       </div>
     );
   }
@@ -127,56 +119,80 @@ import {
     errorMessage?: string;
   }) {
     const block = blockInstance as NewInstance;
-    const { label, options, required } = block.attributes;
+    const { label, options, required, allowMultiple } = block.attributes;
   
-    const [value, setValue] = useState("");
+    const [values, setValues] = useState<string[]>([]);
     const [isError, setIsError] = useState(false);
   
-    const validateField = (val: string) => {
+    const validateField = (vals: string[]) => {
       if (required) {
-        return val.trim().length > 0;
+        return vals.length > 0;
       }
-      return true; // If not required, always valid.
+      return true;
+    };
+  
+    const handleValueChange = (value: string) => {
+      let newValues: string[];
+      if (allowMultiple) {
+        // Toggle value in array for multiple selection
+        newValues = values.includes(value)
+          ? values.filter(v => v !== value)
+          : [...values, value];
+      } else {
+        // Single selection
+        newValues = [value];
+      }
+      
+      setValues(newValues);
+      const isValid = validateField(newValues);
+      setIsError(!isValid);
+      
+      if (handleBlur) {
+        handleBlur(block.id, newValues.join(','));
+      }
     };
   
     return (
-      <div
-        className="flex flex-col
-    gap-3 w-full
-      "
-      >
+      <div className="flex flex-col gap-3 w-full">
         <Label
-          className={`
-       text-base !font-normal mb-2
-         ${isError || isSubmitError ? "text-red-500" : ""}`}
+          className={`text-base !font-normal mb-2 ${
+            isError || isSubmitError ? "text-red-500" : ""
+          }`}
         >
           {label}
           {required && <span className="text-red-500">*</span>}
         </Label>
   
-        <RadioGroup
-          value={value}
-          className="space-y-3"
-          onValueChange={(value) => {
-            setValue(value);
-            const isValid = validateField(value);
-            setIsError(!isValid);
-            if (handleBlur) {
-              handleBlur(block.id, value);
-            }
-          }}
-        >
+        <div className="space-y-3">
           {options?.map((option: string, index: number) => {
             const uniqueId = `option-${generateUniqueId()}`;
             return (
               <div key={index} className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value={option}
-                  id={uniqueId}
-                  className={`!cursor-pointer ${
-                    isError || isSubmitError ? "!border-red-500" : ""
-                  }`}
-                />
+                <div
+                  className={`flex h-4 w-4 shrink-0 rounded-${
+                    allowMultiple ? 'sm' : 'full'
+                  } border border-primary ${
+                    values.includes(option)
+                      ? "bg-primary text-primary-foreground"
+                      : "border-primary"
+                  } ${isError || isSubmitError ? "!border-red-500" : ""}`}
+                  onClick={() => handleValueChange(option)}
+                >
+                  {values.includes(option) && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-4 w-4 text-white"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </div>
                 <Label
                   htmlFor={uniqueId}
                   className="!font-normal !cursor-pointer"
@@ -186,13 +202,11 @@ import {
               </div>
             );
           })}
-        </RadioGroup>
+        </div>
   
         {isError ? (
           <p className="text-red-500 text-[0.8rem]">
-            {required && value.trim().length === 0
-              ? "This field is required"
-              : ""}
+            {required && values.length === 0 ? "This field is required" : ""}
           </p>
         ) : (
           errorMessage && (
@@ -223,6 +237,7 @@ import {
         label: block.attributes.label,
         required: block.attributes.required,
         options: block.attributes.options || [],
+        allowMultiple: block.attributes.allowMultiple,
       },
     });
   
@@ -232,6 +247,7 @@ import {
         label: block.attributes.label,
         required: block.attributes.required,
         options: block.attributes.options || [],
+        allowMultiple: block.attributes.allowMultiple,
       });
     }, [block.attributes, form]);
   
@@ -387,6 +403,34 @@ import {
                       </Button>
                     </div>
                   </div>
+                </FormItem>
+              )}
+            />
+  
+            {/* Allow Multiple Selections Field */}
+            <FormField
+              control={form.control}
+              name="allowMultiple"
+              render={({ field }) => (
+                <FormItem className="text-end">
+                  <div className="flex items-center justify-between w-full gap-2">
+                    <FormLabel className="text-[13px] font-normal">
+                      Allow Multiple Selections
+                    </FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(value) => {
+                          field.onChange(value);
+                          setChanges({
+                            ...form.getValues(),
+                            allowMultiple: value,
+                          });
+                        }}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
