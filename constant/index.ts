@@ -18,12 +18,3 @@ export const fontSizeClass = {
   "2x-large": "text-2xl",
   "4x-large": "text-4xl",
 };
-
-export const FIELD_BLOCKS = [
-  "TextField",
-  "TextArea",
-  "RadioSelect",
-  "StarRating",
-  "Media",
-  "Calendar",
-] as const;

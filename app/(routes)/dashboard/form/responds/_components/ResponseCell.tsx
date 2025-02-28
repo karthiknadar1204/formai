@@ -1,49 +1,52 @@
-import { format } from "date-fns";
+import Image from "next/image";
+import { FileIcon } from "lucide-react";
 
 interface ResponseCellProps {
-  value: any;
+  value: string;
   type?: string;
 }
 
 export function ResponseCell({ value, type }: ResponseCellProps) {
-  if (!value) return <span>-</span>;
-
-  // Check if the value is a media URL
+  // Check if the value is a media URL (image or PDF)
   const isMediaUrl = value?.startsWith('https://utfs.io') || value?.startsWith('https://uploadthing.com');
   
-  if (isMediaUrl) {
-    const isImage = value.match(/\.(jpg|jpeg|png|gif|webp)$/i);
-    if (isImage) {
-      return (
-        <img 
-          src={value} 
-          alt="Response media" 
-          className="max-w-[100px] max-h-[100px] object-cover rounded-md"
-        />
-      );
-    }
+  if (!isMediaUrl) {
+    return <span className="text-sm text-gray-700">{value}</span>;
+  }
+
+  const isPDF = value?.toLowerCase().endsWith('.pdf');
+
+  if (isPDF) {
     return (
+      <div className="flex items-center gap-2 text-sm text-gray-700">
+        <FileIcon className="w-4 h-4" />
+        <a href={value} target="_blank" rel="noopener noreferrer" className="hover:underline">
+          View PDF
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative group">
+      <div className="w-12 h-12 relative rounded-md overflow-hidden border border-gray-200">
+        <Image
+          src={value}
+          alt="Uploaded image"
+          fill
+          className="object-cover"
+          sizes="48px"
+        />
+      </div>
       <a 
         href={value} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="text-blue-500 hover:text-blue-700 underline"
+        className="hidden group-hover:block absolute top-0 left-0 w-full h-full bg-black/50 text-white text-xs 
+          flex items-center justify-center rounded-md"
       >
-        View File
+        View
       </a>
-    );
-  }
-
-  // Handle Calendar type
-  if (type === 'Calendar') {
-    try {
-      const date = new Date(value);
-      return <span>{format(date, 'PPP')}</span>;
-    } catch {
-      return <span>{value}</span>;
-    }
-  }
-
-  // Default case
-  return <span>{value}</span>;
+    </div>
+  );
 } 
