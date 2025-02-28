@@ -18,12 +18,12 @@ type Props = {
 };
 
 const VISUALIZATION_TYPES = [
-  { id: 'pie', label: 'Pie Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select'] },
-  { id: 'bar', label: 'Bar Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select'] },
-  { id: 'line', label: 'Line Chart', supportedTypes: ['TextField', 'TextArea', 'NumberField', 'EmailField'] },
-  { id: 'area', label: 'Area Chart', supportedTypes: ['TextField', 'TextArea', 'NumberField', 'EmailField'] },
-  { id: 'radar', label: 'Radar Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select'] },
-  { id: 'funnel', label: 'Funnel Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select'] }
+  { id: 'pie', label: 'Pie Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select', 'Calendar'] },
+  { id: 'bar', label: 'Bar Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select', 'Calendar'] },
+  { id: 'line', label: 'Line Chart', supportedTypes: ['TextField', 'TextArea', 'NumberField', 'EmailField', 'Calendar'] },
+  { id: 'area', label: 'Area Chart', supportedTypes: ['TextField', 'TextArea', 'NumberField', 'EmailField', 'Calendar'] },
+  { id: 'radar', label: 'Radar Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select', 'Calendar'] },
+  { id: 'funnel', label: 'Funnel Chart', supportedTypes: ['RadioSelect', 'StarRating', 'Select', 'Calendar'] }
 ];
 
 const VisualizationSelector: React.FC<Props> = ({ blocks, onSelect }) => {
