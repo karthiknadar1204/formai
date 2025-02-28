@@ -17,4 +17,18 @@ export const fontSizeClass = {
   "x-large": "text-xl", // Tailwind class for extra large font
   "2x-large": "text-2xl",
   "4x-large": "text-4xl",
+
 };
+
+export const FIELD_BLOCKS = [
+  "TextField",
+  "TextArea",
+  "RadioSelect",
+  "StarRating",
+  "Media",
+  "Calendar",
+  "Select",
+] as const;
+
+};
+

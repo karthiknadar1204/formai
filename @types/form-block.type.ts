@@ -1,14 +1,16 @@
-export type FormCategoryType = "Layout" | "Field";
+export type FormCategoryType = "Field" | "Layout" | "Content";
 
 export type FormBlockType =
-  | "RowLayout"
-  | "RadioSelect"
   | "TextField"
   | "TextArea"
+  | "RadioSelect"
   | "StarRating"
+  | "Media"
+  | "Calendar"
+  | "Select"
   | "Heading"
   | "Paragraph"
-  | "Media";
+  | "RowLayout";
 
 export type HandleBlurFunc = (key: string, value: string) => void;
 
