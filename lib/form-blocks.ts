@@ -8,6 +8,7 @@ import { StarRatingBlock } from "@/components/blocks/StarRatingBlock";
 import { TextAreaBlock } from "@/components/blocks/TextAreaBlock";
 import { TextFieldBlock } from "@/components/blocks/TextField";
 import { RowLayoutBlock } from "@/components/blocks/layouts/RowLayout";
+import { SelectBlock } from "@/components/blocks/SelectBlock";
 
 export const FormBlocks: Record<string, ObjectBlockType> = {
   TextField: TextFieldBlock,
@@ -16,6 +17,7 @@ export const FormBlocks: Record<string, ObjectBlockType> = {
   StarRating: StarRatingBlock,
   Media: MediaBlock,
   Calendar: CalendarBlock,
+  Select: SelectBlock,
   Heading: HeadingBlock,
   Paragraph: ParagraphBlock,
   RowLayout: RowLayoutBlock,
