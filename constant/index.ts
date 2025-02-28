@@ -26,4 +26,5 @@ export const FIELD_BLOCKS = [
   "StarRating",
   "Media",
   "Calendar",
+  "Select",
 ] as const;
