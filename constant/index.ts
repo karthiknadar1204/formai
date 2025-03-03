@@ -30,5 +30,3 @@ export const FIELD_BLOCKS = [
   "Select",
 ] as const;
 
-};
-
